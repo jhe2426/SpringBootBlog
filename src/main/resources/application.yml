@@ -22,7 +22,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create #create는 프로젝트를 재 실행할 때 마다 테이블을 새로 다시 만드는 속성임 최초에만 create 속성을 사용하여 한번만 테이블을 생성시킴
+      ddl-auto: update #create는 프로젝트를 재 실행할 때 마다 테이블을 새로 다시 만드는 속성임 최초에만 create 속성을 사용하여 한번만 테이블을 생성시킴
       naming:
       #엔티티 클래스로 테이블을 만들 때 변수명 그대로 데이터베이스의 컬럼명으로 만들어 지게하기 위해 설정한 명령어임
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
