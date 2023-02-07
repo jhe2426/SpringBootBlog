@@ -1,0 +1,40 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /blog
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+      
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Seoul
+    username: cos
+    password: cos1234
+    
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create #create는 프로젝트를 재 실행할 때 마다 테이블을 새로 다시 만드는 속성임 최초에만 create 속성을 사용하여 한번만 테이블을 생성시킴
+      naming:
+      #엔티티 클래스로 테이블을 만들 때 변수명 그대로 데이터베이스의 컬럼명으로 만들어 지게하기 위해 설정한 명령어임
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      #physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy이 전략은
+      #엔티티 클래스에 커멜 표기법 으로 지정되어져 있는 변수를 테이블을 만들 때 컬럼명을 _를 집어넣어 컬럼명을 지정하는 전략임
+      #예) 엔티티 클래스 myEmail을 -> 테이블 컬럼명이 my_email 이런 식으로 
+      use-new-id-generator-mappings: false  #false로 설정하면 JPA의 기본 넘버링 전략을 따라가지 않겠다는 의미
+    show-sql: true #true설정을 해서 콘솔창에 데이터베이스의 명령어가 보이도록 설정이 된 것
+    properties:
+      hibernate.format_sql: true #이 설정을 하지 않으면 콘솔창에서 데이터베이스 명령어가 한줄로 보여 가독성이 안 좋은데
+                                                     #이 설정을 true로 지정하여 콘솔창에서 데이터베이스 명령어가 정령이 되어 보여지도록 해줌
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
