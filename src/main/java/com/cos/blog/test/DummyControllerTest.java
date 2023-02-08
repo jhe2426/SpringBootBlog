@@ -8,10 +8,12 @@ import java.util.function.Supplier;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,10 +42,22 @@ public class DummyControllerTest {
 	@Autowired//의존성 주입(DI)
 	private UserRepository userRepository;
 	
+	@DeleteMapping("/dummy/user/{id}")
+	public String delete(@PathVariable Long id) {
+		try {
+			userRepository.deleteById(id);//아이디 값이 디비에 없는 값이 들어올 수 있으므로 예외처리가 꼭 필요함
+		} catch (EmptyResultDataAccessException e) { 
+			//예외의 부모인 Exception형으로 선언하면 모든 예외를 받을 수 있기 때문에 
+			//하나 하나 무슨 예외가 발생하는지에 대한 예외형을 사용하지 않아도 된다.
+			//정확하게 excption을 사용하면 해당 excption 때문이 아니라 다른 예외가 발생했다는 것을 알 수 있기 때문에 
+			//정확하게 excption을 주면 이러한 장점이 있다.
+			return "삭제에 실패하였습니다. 해당 id는 DB에 없습니다.";
+		}
+		
+		return "삭제되었습니다. id: "+id;
+	}		
 	
-
-
-	
+																											
 	
 	//sava 함수는 id를 전달하지 않으면 insert를 해주고 
 	//sava 함수는 id를 전달하면 해당 id에 대한 데이터가 있으면 update를 해주고
@@ -51,7 +65,8 @@ public class DummyControllerTest {
 	//email,password를 수정할 것이므로 매개변수로 받아야 함
 	//@RequestBody User requestUser Json형으로 데이터 값을 받아 오는 방법 임
 	//json 데이터를 요청 => 스프링이  Java Object(MessageConverter의 Jackson 라이브러리가 변환해서 받아 줌)
-	@Transactional
+	@Transactional //함수 종료시에 자동 commit이 됨
+	//commit이 될 때 영속화된 데이터의 값이 변경이 되면 이를 감지하고 데이터를 업데이트 하여 영속화 시키고 DB에 저장을 해줌
 	@PutMapping("/dummy/user/{id}")
 	public User updateUser(@PathVariable Long id, @RequestBody User requestUser) {
 		System.out.println("id : " +id);
@@ -67,8 +82,8 @@ public class DummyControllerTest {
 		//해당 PK값으로 해당 테이블 값들을(실제 데이터 값)  받아온 뒤 값을 변경하고 save()메서드에 값을 넣어야지 문제없이 업데이트가 가능하게 된다.
 		//userRepository.save(user);
 		//@Transation을 걸면 save 함수를 사용하지 않아도 sava가 됨 -> 더티 체킹이라고 함
-		//더디 체킹(
-		return null;
+		//더디 체킹(영속화된 데이터의 값이 변경이 되면 이를 감지하고 데이터를 업데이트 하여 영속화 시키고 DB에 저장을 해줌)
+		return user;
 	}
 	
 	
@@ -109,7 +124,7 @@ public class DummyControllerTest {
 		User user = userRepository.findById(id).orElseThrow(new Supplier<IllegalArgumentException>() {
 			@Override
 			public IllegalArgumentException get() {
-				return new IllegalArgumentException("해당 유저는 없습니다. id : " + id);
+				return new IllegalArgumentException("해당 유저는 없습니다.  ");
 			}
 		});
 		//요청 : 웹브라우저

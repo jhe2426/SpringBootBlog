@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,7 +41,7 @@ public class User {
 	//따라가게 됨
 	private Long id; //시퀀스, auto_increment
 	
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false, length = 30, unique = true)
 	private String username; // 아이디
 	
 	@Column(nullable = false, length = 100) // 비밀번호를 해쉬로 변경하여 비밀번호를 암호화하기 위해 길이의 제한을 넉넉하게 설정한 것
