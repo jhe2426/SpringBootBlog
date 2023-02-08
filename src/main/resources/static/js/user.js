@@ -6,6 +6,9 @@ let index = {
 				this.save();
 				//여기 위치의 this 값은 같은 값인데
 				//()=>{}를 사용하지 않고 function(){}을 선언하여 안에다가 this를 사용하여 위의 this값과 달라지므로 ()=>{}를 사용한 것
+				//function(){}을 선언하여 안에다가 this를 사용하여 위의 this값과 달라지는 이유는
+				//자바스크립트의 부모는 window인데 함수를 정의라하고 this를 호출하게 되면 this에는 아무 값도 없으므로 찾다 찾다 부모를 찾아가게 되므로 
+				//function(){}안의 this는 window 객체가 되는 것
 			}); 
 		},
 		
