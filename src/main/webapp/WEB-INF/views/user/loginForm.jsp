@@ -3,22 +3,26 @@
 
 <div class="container">
 
-	<form action="/action_page.php">
+	<form action="#" method="post">
 		<div class="form-group">
-			<label for="username">Username</label> <input type="text" class="form-control" placeholder="Enter Username" id="username">
+			<label for="username">Username</label> 
+			<input type="text" name="username" class="form-control" placeholder="Enter Username" id="username">
 		</div>
 
 		<div class="form-group">
-			<label for="password">Password</label> <input type="password" class="form-control" placeholder="Enter password" id="password">
+			<label for="password">Password</label> 
+			<input type="password" name="password"  class="form-control" placeholder="Enter password" id="password">
 		</div>
 		
 		<div class="form-group form-check">
-			<label class="form-check-label"> <input class="form-check-input" type="checkbox"> Remember me
+			<label class="form-check-label"> 
+			<input name="remeber"  class="form-check-input"     type="checkbox"> Remember me
 			</label>
 		</div>
-		<button type="submit" class="btn btn-primary">로그인</button>
+		<!-- 폼에서 처리 되록 할 것임(시큐리티 라이브러리를 사용하므로) -->
+		<button id="btn-login" class="btn btn-primary">로그인</button>
 	</form>
-
+	
 
 	<!-- 	<form action="/action_page.php" class="was-validated">
 		<div class="form-group">
@@ -41,5 +45,7 @@
 	</form> -->
 
 </div>
+<!-- 시큐리티 라이브러리를 사용하기위해 자바스크립트는 사용하지 않아도 됨 -->
+<script src="/js/user.js"></script>
 
 <%@ include file="../layout/footer.jsp"%>
