@@ -48,7 +48,8 @@ let index = {
 		}).done(function(resp) { //회원가입 수행이 정상적으로 실행이 되면 done이 실행이 됨
 			alert("회원가입이 완료되었습니다.");
 			console.log(resp);
-			location.href = "/";
+			//회원가입이 완료되면 "/"로 가야하는데 시큐리티에 허용을 설정해주지 않으면 회원가입이 완료 후 메인 페이지로 갈 수가 없게 됨
+			location.href = "/"; 
 		}).fail(function(error) {//회원가입 수행이 정상적으로 실행이 되지 않으면 fail이 실행이 됨
 			alert(JSON.stringify(error));
 		});
