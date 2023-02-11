@@ -1,0 +1,33 @@
+Get요청(select)
+주소에 데이터를 담아 보낸다. 데이터 형태는 key=value
+특징 : body로 데이터를 담아 보내지 않음(http body가 없음)
+
+Post(insert), Put(update), Delete 요청 (데이터를 변경)
+- 데이터를 담아보내야 할 것이 많음
+- usrname, password, email, address, gender, createDate
+- Post요청은 form 태그 method = 'Post'방식으로 전송하면 됨
+- 하지만 form 태그는 get전송, post전송 밖에 할 수 없다는 한계가 있음(key=value형태로 전송 됨)
+- 그래서 put, delete 요청을 할 때는 자바스크립트로 요청을 해야 함
+- 위의 이유 때문에 통일성이 존재하지 않아 밑의 방법으로 통일하여 요청을 하게 됨
+
+- 통일 : 자바스크립트로 ajax요청 + 데이터 json으로 통일
+form:form 태그 -> post요청, put요청, delete요청, get요청 또한 가능
+<form:form>
+
+post 요청 중에 x-www-form-urlencoded(form태그를 만들어서 데이터 전송)시에도 key=value형태로 데이터를 전송함
+*스프링 컨트롤러는 key=value형태로 데이터가 컨트롤러에 날라오면 자동으로 파싱을 하여 변수에 담아줌
+*key=value 형태의 데이터를 오브젝트로 파싱해서도 받아주는 역할을 한다
+ 주의점 오브젝트에 setter가 없으면 key=value 데이터를 스프링이 파싱해서 넣어주지 못한다.
+
+오브젝트로 데이터 받기
+post방식의 key=value(x-www-form-urlencoded)형태로 데이터를 보낼 건데
+username=ssar
+password=1234 전송할 때 키 값이 오브젝트의 변수 이름과 같아야지 setter가 호출이 되어
+컨트롤러가 자동으로 파싱을 해줄 수 있다.
+
+오브젝트 멤버 변수에 정의 되어있지 않는 변수의 키에 값을 집어 넣으면 해당 변수가 오브젝트에 존재하지
+않으므로 알아서 해당 변수에 대한 값이 들어가지 않게 된다.(즉, 오류는 발생이 되지않음)
+하지만 오브젝트에 해당 변수가 존재하는데 setter가 정의되어 있지않으면 오류가 발생하므로 주의해야한다.
+
+key=value가 아닌 데이터는 꼭 @RequestBody 어노테이션을 사용해야 파싱이 가능하다.
+@RequestBody 어노테이션을 붙이면 MessageConverter 클래스를 구현한 Jackson 라이브러리가 발동하면서 json 데이터를 자바 오브젝트로 파싱하여 받아준다.
