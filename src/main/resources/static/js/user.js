@@ -10,8 +10,13 @@ let index = {
 			//자바스크립트의 부모는 window인데 함수를 정의라하고 this를 호출하게 되면 this에는 아무 값도 없으므로 찾다 찾다 부모를 찾아가게 되므로 
 			//function(){}안의 this는 window 객체가 되는 것
 		});
+
+		$("#btn-update").on("click", () => {
+			this.update();
+		});	
+		
 		//	$("#btn-login").on("click", () => {
-				this.login();
+		//this.login();
 		//	});
 	},
 
@@ -49,46 +54,67 @@ let index = {
 			alert("회원가입이 완료되었습니다.");
 			console.log(resp);
 			//회원가입이 완료되면 "/"로 가야하는데 시큐리티에 허용을 설정해주지 않으면 회원가입이 완료 후 메인 페이지로 갈 수가 없게 됨
-			location.href = "/"; 
+			location.href = "/";
 		}).fail(function(error) {//회원가입 수행이 정상적으로 실행이 되지 않으면 fail이 실행이 됨
 			alert(JSON.stringify(error));
 		});
+	},
+	
+	update: function() {
+		let data = {
+			id: $("#id").val(),
+			username: $("#username").val(),
+			password: $("#password").val(),
+			email: $("#email").val()
+		};
+
+		$.ajax({
+			type: "PUT",
+			url: "/user",
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json"
+		}).done(function(resp) { 
+			alert("회원수정이 완료되었습니다.");
+			console.log(resp);
+			location.href = "/";
+		}).fail(function(error) {
+			alert(JSON.stringify(error));
+		});
+		
 	}
 
-
-
-
-//	login: function() {
-		//alert('user의 save함수 호출 됨');
-//		let data = {
-//			username: $("#username").val(),
-//			password: $("#password").val()
-//			//여기서 data는 자바스크립트 오브젝이므로 자바로 던지면 해석을 할 수 없으므로 ajax통식을  할 때 json 문자열로 변환을 하고 자바로 던짐
-//		};
-
-		//console.log(data);
-
-		//ajax호출 시 default가 비동기 호출
-		//ajax 통신을 이용해서 3개의 데이터를 json으로 변경하여 insert 요청 할 것임
-//		$.ajax({
-//			//GET방식으로 로그인 요청을 하면 주소에 아이디와 패스워드 정보가 남기 때문에 무조건 중요한 정보를 전달할 때는 POST방식 사용할 것
-//			type: "POST",
-//			//url을 /api/user/join으로 작성하지 않는 이유는 전송 방식이 POST이므로 user을 insert를 하는 것인지 알기 때문에 굳이 적지 않는 것
-//			url: "/api/user/login",
-//			//http body 데이터 http body 데이터를 날리려면 마인 타입을 꼭 알려줘야함
-//			data: JSON.stringify(data),
-//			//body데이터가 어떤 타입(MIME)인지 알려주는 코드
-//			//마인 타입(MIME) 설정하는 부분 json 문자열과 마인 타입 설정 코드는 세트임(항상 설정해줘야하는 거)
-//			contentType: "application/json; charset=utf-8",
-//			dataType: "json"
-//		}).done(function(resp) { //로그인 수행이 정상적으로 실행이 되면 done이 실행이 됨
-//			alert("로그인이 완료되었습니다.");
-//			location.href = "/";
-//		}).fail(function(error) {//로그인 수행이 정상적으로 실행이 되지 않으면 fail이 실행이 됨
-//			alert(JSON.stringify(error));
-//		});
-//	}
 
 }
 
 index.init();
+	//	login: function() {
+	//alert('user의 save함수 호출 됨');
+	//		let data = {
+	//			username: $("#username").val(),
+	//			password: $("#password").val()
+	//			//여기서 data는 자바스크립트 오브젝이므로 자바로 던지면 해석을 할 수 없으므로 ajax통식을  할 때 json 문자열로 변환을 하고 자바로 던짐
+	//		};
+
+	//console.log(data);
+
+	//ajax호출 시 default가 비동기 호출
+	//ajax 통신을 이용해서 3개의 데이터를 json으로 변경하여 insert 요청 할 것임
+	//		$.ajax({
+	//			//GET방식으로 로그인 요청을 하면 주소에 아이디와 패스워드 정보가 남기 때문에 무조건 중요한 정보를 전달할 때는 POST방식 사용할 것
+	//			type: "POST",
+	//			//url을 /api/user/join으로 작성하지 않는 이유는 전송 방식이 POST이므로 user을 insert를 하는 것인지 알기 때문에 굳이 적지 않는 것
+	//			url: "/api/user/login",
+	//			//http body 데이터 http body 데이터를 날리려면 마인 타입을 꼭 알려줘야함
+	//			data: JSON.stringify(data),
+	//			//body데이터가 어떤 타입(MIME)인지 알려주는 코드
+	//			//마인 타입(MIME) 설정하는 부분 json 문자열과 마인 타입 설정 코드는 세트임(항상 설정해줘야하는 거)
+	//			contentType: "application/json; charset=utf-8",
+	//			dataType: "json"
+	//		}).done(function(resp) { //로그인 수행이 정상적으로 실행이 되면 done이 실행이 됨
+	//			alert("로그인이 완료되었습니다.");
+	//			location.href = "/";
+	//		}).fail(function(error) {//로그인 수행이 정상적으로 실행이 되지 않으면 fail이 실행이 됨
+	//			alert(JSON.stringify(error));
+	//		});
+	//	}

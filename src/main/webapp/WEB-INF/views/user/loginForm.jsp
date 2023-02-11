@@ -24,6 +24,7 @@
 -->
 		<!-- 폼에서 처리 되록 할 것임(시큐리티 라이브러리를 사용하므로) -->
 		<button id="btn-login" class="btn btn-primary">로그인</button>
+		<a href="https://kauth.kakao.com/oauth/authorize?client_id=2b5767577d10f5d3868fc5fcfd25a414&redirect_uri=http://localhost:8000/auth/kakao/callback&response_type=code" ><img height="38" src="/image/kakao_login_button.png"/></a>
 	</form>
 	
 

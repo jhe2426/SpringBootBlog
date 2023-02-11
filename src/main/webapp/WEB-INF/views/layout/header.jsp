@@ -9,6 +9,7 @@
 	header.jsp파일에서 사용할 수 있게 된다. 
 -->
 	<sec:authentication property="principal" var="principal" />
+	<!-- principal는 PrincipalDetail클래스에 정의가 되어있는 값들이 저장되어져 있는 것들이다.(시큐리티 세션에 저장되어져 있는 유저의 정보) -->
 </sec:authorize>
 
 <!DOCTYPE html>

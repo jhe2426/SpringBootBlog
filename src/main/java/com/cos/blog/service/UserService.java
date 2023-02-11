@@ -32,6 +32,7 @@ public class UserService {
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
+	
 	//회원가입
 	@Transactional
 	public void signUp(User user) {
@@ -42,15 +43,38 @@ public class UserService {
 		userRepository.save(user);
 	}
 	
-	//로그인
-	//Select할 때 트랜잭션 시작 그리고 해당 서비스가 종료될 때 트랜잭션이 종료 되는데
-	//이때 readOnly=true를 설정하게 더티 체크는 신경쓰지 않고  정합성을 지킴
-	//더디 체크는 영속성에 들어가 있는 값이 변경이 되었는지를 계속 체크하고 있는 것
-	//select만 할 메소드이기 때문에 더디 체크를 하면 성능만 안좋아지므로 readOnly를 사용하는 것
-	//전통 로그인 방식임(요즘은 JWT토큰을 사용하거나 스프링 부트 시큐리티를 사용함)
-	//	@Transactional(readOnly = true) 
-	//	public User login(User user) {
-	//		return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
-	//	}
 	
+	//회원정보 수정
+	@Transactional
+	public void userUpdate(User user) {
+		//수정시에는 영속성 컨텍스트에 User 오브젝트를 영속화시키고, 영속화된 User 오브젝트를 수정하는것이 제일 좋음
+		//select를 해서 User오브젝트를 DB로 부터 가져오는 이유는 영속화를 하기 위해서하는 것
+		//영속화된 오브젝트를 변경하면 자동으로 더티체킹을 해서 DB에 update문을 날려주기 때문에
+		//DB에 있는 User를 가져와 영속성 컨텍스트에 User정보를 담는 것
+		User persistance = userRepository.findById(user.getId()).orElseThrow(()->{
+			return new IllegalArgumentException("회원 찾기 실패");
+		});
+		
+		String rawPassword = user.getPassword();//암호화 되기 전 상태
+		String encPassword = encoder.encode(rawPassword);//암호화 된 상태
+		persistance.setPassword(encPassword);//영속성 컨텍스트에 있는 user에 대한 정보를 바꾸는 것
+		persistance.setEmail(user.getEmail());
+		//회원수정 함수 종료시 = 서비스 종료 시 = 트랜잭션 종료 = DB commit이 자동으로 됨
+		//commit이 자동으로 된다는 건 영속화된 persistance 객체의 변화가 감지 되면 더티체킹이 되어 update문을 db에 날려줌
+		
+	}
+	
+
+
 }
+
+//로그인
+//Select할 때 트랜잭션 시작 그리고 해당 서비스가 종료될 때 트랜잭션이 종료 되는데
+//이때 readOnly=true를 설정하게 더티 체크는 신경쓰지 않고  정합성을 지킴
+//더디 체크는 영속성에 들어가 있는 값이 변경이 되었는지를 계속 체크하고 있는 것
+//select만 할 메소드이기 때문에 더디 체크를 하면 성능만 안좋아지므로 readOnly를 사용하는 것
+//전통 로그인 방식임(요즘은 JWT토큰을 사용하거나 스프링 부트 시큐리티를 사용함)
+//	@Transactional(readOnly = true) 
+//	public User login(User user) {
+//		return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+//	}
