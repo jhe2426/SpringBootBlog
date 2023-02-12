@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cos.blog.domain.User;
+import com.cos.blog.model.User;
 
 //DAO
 // 자동으로 bean등록이 된다

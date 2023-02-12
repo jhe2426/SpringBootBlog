@@ -11,6 +11,10 @@ let index = {
 		$("#btn-update").on("click", () => {
 			this.update();
 		});
+		
+		$("#btn-reply-save").on("click", () => {
+			this.replySave();
+		});
 	},
 
 	save: function() {
@@ -57,13 +61,13 @@ let index = {
 
 		let data = {
 			title: $("#title").val(),
-			content: $("#content").val() 
+			content: $("#content").val()
 		};
 
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/board/"+id,
+			url: "/api/board/"   + id,
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json"
@@ -73,6 +77,43 @@ let index = {
 		}).fail(function(error) {
 			alert(JSON.stringify(error));
 		});
+	},
+	
+	replySave:function(){
+		//alert('user의 save함수 호출됨');
+		let data = {
+			userId: $("#userId").val(),
+			boardId: $("#boardId").val(),
+			content: $("#reply-content").val()		
+		};
+		
+		$.ajax({
+			type: "POST",
+			data:JSON.stringify(data),  //http body 데이터
+			url: `/api/board/${data.boardId}/reply`,	
+			contentType:"application/json; charset=utf-8", 
+			dataType: "json" 
+		}).done(function(resp){
+			alert("댓글작성이 완료되었습니다.");
+			location.href = `/board/${data.boardId}`;
+		}).fail(function(error){
+			alert(JSON.stringify(error));
+		}); 
+	},
+	
+	replyDelete:function(boardId, replyId){
+			
+		$.ajax({
+			type: "DELETE",
+			url: `/api/board/${boardId}/reply/${replyId}`,	
+			dataType: "json" 
+		}).done(function(resp){
+			alert("댓글삭세 성공");
+			location.href = `/board/${boardId}`;
+		}).fail(function(error){
+			alert(JSON.stringify(error));
+		}); 
+		
 	}
 
 }

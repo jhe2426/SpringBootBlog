@@ -1,4 +1,4 @@
-package com.cos.blog.domain;
+package com.cos.blog.model;
 
 import java.sql.Timestamp;
 
@@ -41,7 +41,7 @@ public class User {
 	//따라가게 됨
 	private Long id; //시퀀스, auto_increment
 	
-	@Column(nullable = false, length = 30, unique = true)
+	@Column(nullable = false, length = 100, unique = true)
 	private String username; // 아이디
 	
 	@Column(nullable = false, length = 100) // 비밀번호를 해쉬로 변경하여 비밀번호를 암호화하기 위해 길이의 제한을 넉넉하게 설정한 것
@@ -54,8 +54,11 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private RoleType role;
 	
+	private String oauth;//kakao,google
+	
 	@CreationTimestamp//시간이 자동으로 입력이 됨
 	private Timestamp createDate; //회원가입 날짜
 
-
+	
+	
 }

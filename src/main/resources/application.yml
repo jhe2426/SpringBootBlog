@@ -38,3 +38,7 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+#카카오로 회원가입을 할 시 아래에 있는 key 값으로 모든 비밀번호를 지정할 것이므로 해당 정보는 실제 서비스를 운영할 시 절대로 공개 돼서는 안 된다.     
+cos:
+  key: cos1234

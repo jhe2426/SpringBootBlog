@@ -13,8 +13,8 @@ let index = {
 
 		$("#btn-update").on("click", () => {
 			this.update();
-		});	
-		
+		});
+
 		//	$("#btn-login").on("click", () => {
 		//this.login();
 		//	});
@@ -51,15 +51,20 @@ let index = {
 			//그래서 dataType:"json" 서버에서 리턴 값이 json이라고 안 알려줘도 자동으로 javcscript오브젝트로 변환이 되지만 그래도 그냥 작성하는 것
 			dataType: "json"
 		}).done(function(resp) { //회원가입 수행이 정상적으로 실행이 되면 done이 실행이 됨
-			alert("회원가입이 완료되었습니다.");
-			console.log(resp);
-			//회원가입이 완료되면 "/"로 가야하는데 시큐리티에 허용을 설정해주지 않으면 회원가입이 완료 후 메인 페이지로 갈 수가 없게 됨
-			location.href = "/";
+			if (resp.status === 500) {
+				alert("회원가입에 실패하였습니다.");
+				location.href = "/";
+			} else {
+				alert("회원가입이 완료되었습니다.");
+				//console.log(resp);
+				//회원가입이 완료되면 "/"로 가야하는데 시큐리티에 허용을 설정해주지 않으면 회원가입이 완료 후 메인 페이지로 갈 수가 없게 됨
+				location.href = "/";
+			}
 		}).fail(function(error) {//회원가입 수행이 정상적으로 실행이 되지 않으면 fail이 실행이 됨
 			alert(JSON.stringify(error));
 		});
 	},
-	
+
 	update: function() {
 		let data = {
 			id: $("#id").val(),
@@ -74,14 +79,14 @@ let index = {
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json"
-		}).done(function(resp) { 
+		}).done(function(resp) {
 			alert("회원수정이 완료되었습니다.");
 			console.log(resp);
 			location.href = "/";
 		}).fail(function(error) {
 			alert(JSON.stringify(error));
 		});
-		
+
 	}
 
 

@@ -1,8 +1,9 @@
-package com.cos.blog.domain;
+package com.cos.blog.model;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,11 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.cos.blog.constant.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,9 +59,12 @@ public class Board {
 	//나중에 select하기 위해서 필요한 코드임
 	//Reply 오브젝트에 있는  board가 FK이다
 	//나는 그냥 Board를 select할 때 join문을 통해서 값을 얻기위해서 필요한 것
-	//연관관계의 주인이 아니면 fetch전략의 디폴트가 LAZY로 설정이 되어 있다.
-	 @OneToMany(mappedBy="board", fetch = FetchType.EAGER)//하나의 게시글을 여러 개의 답변을 가질 수 있기 때문에 리스트형으로 받아야 한다.
-	private  List<Reply> reply; //replyId의 컬럼(즉 외래키가 설정이 되면) 하나의 게시글에 여려 개의 replyId를 가지게 되는데 이것은 
+	//연관관계의 주인이 아니면 fetch전략의 디폴트가 LAZY로 설정이 되어 있다
+	//CascadeType.REMOVE : 보드 게시물을 지울 때 그 게시물의 댓글또한 한꺼번에 다 삭제하겠다는 속성
+	@OneToMany(mappedBy="board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)//하나의 게시글을 여러 개의 답변을 가질 수 있기 때문에 리스트형으로 받아야 한다.
+	@JsonIgnoreProperties({"board"})//Reply안에 있는 board의 getter가 호출이 안 되고 무시를 하게 해주는 어노테이션
+	@OrderBy("id desc")
+	private  List<Reply> replys; //replyId의 컬럼(즉 외래키가 설정이 되면) 하나의 게시글에 여려 개의 replyId를 가지게 되는데 이것은 
 	 												//데이터베이스의 제1정규화를 위반하는 것이므로 Board에서 Reply의 연관관계를 할 때에는 외래키가 필요가 없다.
 	 
 	@CreationTimestamp

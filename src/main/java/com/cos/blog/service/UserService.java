@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cos.blog.constant.RoleType;
-import com.cos.blog.domain.User;
+import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 
 
@@ -33,6 +33,19 @@ public class UserService {
 	private BCryptPasswordEncoder encoder;
 	
 	
+	//회원 찾기
+	@Transactional(readOnly = true)
+	public User findUser(String username) {
+		//null이면 어떻게 처리해야할지 이미 알기 때문에 만약 유저 네임이 존재하지 않으면 .get()메서드를 사용하여 user에 null이 들어가게 됨
+		//orElseGet()는 만약 username에 해당하는 회원이 존재하지 않는다면 빈 객체를 리턴해라는 메서드임
+		//강제로 객체에 값을 넣어서 리턴을 해줘도 됨
+		User user = userRepository.findByUsername(username).orElseGet(()->{
+			return new User();
+		});
+		return user;
+	}
+	
+	
 	//회원가입
 	@Transactional
 	public void signUp(User user) {
@@ -54,11 +67,18 @@ public class UserService {
 		User persistance = userRepository.findById(user.getId()).orElseThrow(()->{
 			return new IllegalArgumentException("회원 찾기 실패");
 		});
+		//카카오API로 로그인한 사용자는 비밀번호 변경이 절대 안되는데 Postman공격으로 비밀번호를 바꿀 수도 있기 때문에
+		//서버에도 분기문을 줘서 Oauth()가 널이거나 빈 문자열 즉, 카카오API로 회원가입을 하지 않은
+		//일반 사용자만 해당 비밀번호를 변경할 수 있도록 분기문을 주는 것
+		//Validate 체크 => oauth 필드에 값이 없으면 수정 가능
+		if(persistance.getOauth() == null || persistance.getOauth().equals("")) {
+			String rawPassword = user.getPassword();//암호화 되기 전 상태
+			String encPassword = encoder.encode(rawPassword);//암호화 된 상태
+			persistance.setPassword(encPassword);//영속성 컨텍스트에 있는 user에 대한 정보를 바꾸는 것		
+			persistance.setEmail(user.getEmail());
+		}
 		
-		String rawPassword = user.getPassword();//암호화 되기 전 상태
-		String encPassword = encoder.encode(rawPassword);//암호화 된 상태
-		persistance.setPassword(encPassword);//영속성 컨텍스트에 있는 user에 대한 정보를 바꾸는 것
-		persistance.setEmail(user.getEmail());
+		
 		//회원수정 함수 종료시 = 서비스 종료 시 = 트랜잭션 종료 = DB commit이 자동으로 됨
 		//commit이 자동으로 된다는 건 영속화된 persistance 객체의 변화가 감지 되면 더티체킹이 되어 update문을 db에 날려줌
 		

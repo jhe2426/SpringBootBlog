@@ -2,14 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<!-- isAuthenticated() 인증이 되었는지 안 되었는지 알 수 있는 메서드 -->
+
 <sec:authorize access="isAuthenticated()">
-	<!-- 	
-	authentication는 사용자정보를 가져오는 태그이다. 해당 사용자에 대한 정보를  var="principal"에 할당하여 
-	header.jsp파일에서 사용할 수 있게 된다. 
--->
 	<sec:authentication property="principal" var="principal" />
-	<!-- principal는 PrincipalDetail클래스에 정의가 되어있는 값들이 저장되어져 있는 것들이다.(시큐리티 세션에 저장되어져 있는 유저의 정보) -->
 </sec:authorize>
 
 <!DOCTYPE html>

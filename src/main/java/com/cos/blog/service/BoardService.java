@@ -6,16 +6,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cos.blog.domain.Board;
-import com.cos.blog.domain.User;
+import com.cos.blog.dto.ReplySaveRequestDto;
+import com.cos.blog.model.Board;
+import com.cos.blog.model.Reply;
+import com.cos.blog.model.User;
 import com.cos.blog.repository.BoardRepository;
+import com.cos.blog.repository.ReplyRepository;
+import com.cos.blog.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor //생성자를 만들 때 초기화가 꼭 되어야하는 얘들을 생성자파라미터에 넣어서 꼭 초기화해라라는 어노테이션
+//final변수는 무조건 초기화(즉, 값이 할당이 되어야한다.)
 public class BoardService {
-
-	@Autowired
-	private BoardRepository boardRepository;
-
+	
+	private final BoardRepository boardRepository;
+	private final ReplyRepository replyRepository;
+	
 	// 글쓰기
 	@Transactional
 	public void write(Board board, User user) { // title, content
@@ -32,7 +40,7 @@ public class BoardService {
 	}
 
 	
-	//게시판 상세보기
+	//게시판 글 상세보기
 	@Transactional(readOnly = true)
 	public Board boardDetails(Long id) {
 		return boardRepository.findById(id).orElseThrow(()->{
@@ -48,7 +56,7 @@ public class BoardService {
 	}
 	
 	
-	//게실글 수정하기
+	//게시글 수정하기
 	@Transactional
 	public void boardUpdate(Long id, Board requestBoard) {
 		Board board =	boardRepository.findById(id).orElseThrow(()->{
@@ -60,4 +68,38 @@ public class BoardService {
 		//해당 함수로 종료 시(Service가 종료될 때) 트랜잭션이 종료됩니다. 이때 더티체킹이 일어나면서 자동 업데이트가 일어남 (db에 flush) 
 	}
 	
+	//댓글 작성하기
+	@Transactional
+	public void writeReply(ReplySaveRequestDto replySaveRequestDto) {	
+		int result = replyRepository.mSave(replySaveRequestDto.getUserId(),replySaveRequestDto.getBoardId(),replySaveRequestDto.getContent());
+		System.out.println(result);
+	}
+
+	//댓글 삭제
+	@Transactional
+	public void replyDelete(Long replyId) {
+		replyRepository.deleteById(replyId);
+	}
+	
+	
 }
+/*	
+//댓글 작성하기
+@Transactional
+public void writeReply(ReplySaveRequestDto replySaveRequestDto) {	
+	
+	User user = userRepository.findById(replySaveRequestDto.getUserId()).orElseThrow(()->{
+		return new IllegalArgumentException("댓글 쓰기 실패 : 유저 id를 찾을 수 없습니다.");
+	});//영속화 완료
+	
+	
+	Board board = boardRepository.findById(replySaveRequestDto.getBoardId()).orElseThrow(()->{
+		return new IllegalArgumentException("댓글 쓰기 실패 : 게시글 id를 찾을 수 없습니다.");
+	});//영속화 완료
+	
+	Reply reply = new Reply();
+	reply.update(user, board, replySaveRequestDto.getContent());
+	replyRepository.save(reply);
+	
+}
+*/

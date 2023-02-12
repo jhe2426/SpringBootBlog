@@ -1,4 +1,4 @@
-package com.cos.blog.domain;
+package com.cos.blog.model;
 
 import java.sql.Timestamp;
 
@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.cos.blog.dto.ReplySaveRequestDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class Reply {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)//auto_increment
-	private int id;
+	private Long id;
 	
 	@Column(nullable = false, length = 200)
 	private String content;
@@ -42,6 +44,21 @@ public class Reply {
 	private User user;
 	
 	@CreationTimestamp
-	private Timestamp creatDate;
+	private Timestamp createDate;
+	
+	
+	public void update(User user, Board board, String content) {
+		setUser(user);
+		setBoard(board);
+		setContent(content);
+	}
+
+
+	@Override
+	public String toString() {
+		return "Reply [id=" + id + ", content=" + content + ", board=" + board + ", user=" + user + ", createDate="
+				+ createDate + "]";
+	}
+	
 	
 }
