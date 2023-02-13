@@ -59,7 +59,7 @@ public class BoardController {
 		return "board/updateForm";
 	}
 	
-	
+
 	
 	
 	

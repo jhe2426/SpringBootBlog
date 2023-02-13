@@ -49,7 +49,7 @@ public class Board {
 	private int count;//조회수
 	
 	// Many = Board, One = User 한명의 유저는 여러개의 게시물을 쓸 수 있다. //여러 개의 게시글은 한 명의 유저에 의해서 작성되어질 수 있다.
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="userId")
 	private User user; //DB는 오브젝트를 저장할 수 없다 그래서 FK를 사용해서 연관관계를 설정하지만
 									//자바는 오브젝트를 저장할 수 있음
@@ -61,7 +61,7 @@ public class Board {
 	//나는 그냥 Board를 select할 때 join문을 통해서 값을 얻기위해서 필요한 것
 	//연관관계의 주인이 아니면 fetch전략의 디폴트가 LAZY로 설정이 되어 있다
 	//CascadeType.REMOVE : 보드 게시물을 지울 때 그 게시물의 댓글또한 한꺼번에 다 삭제하겠다는 속성
-	@OneToMany(mappedBy="board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)//하나의 게시글을 여러 개의 답변을 가질 수 있기 때문에 리스트형으로 받아야 한다.
+	@OneToMany(mappedBy="board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)//하나의 게시글을 여러 개의 답변을 가질 수 있기 때문에 리스트형으로 받아야 한다.
 	@JsonIgnoreProperties({"board"})//Reply안에 있는 board의 getter가 호출이 안 되고 무시를 하게 해주는 어노테이션
 	@OrderBy("id desc")
 	private  List<Reply> replys; //replyId의 컬럼(즉 외래키가 설정이 되면) 하나의 게시글에 여려 개의 replyId를 가지게 되는데 이것은 

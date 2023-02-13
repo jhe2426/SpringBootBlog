@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,16 +36,19 @@ public class Reply {
 	private String content;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "boardId")
 	private Board board;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId")
 	private User user;
 	
 	@CreationTimestamp
 	private Timestamp createDate;
+	
+	
+	
 	
 	
 	public void update(User user, Board board, String content) {
@@ -54,11 +58,6 @@ public class Reply {
 	}
 
 
-	@Override
-	public String toString() {
-		return "Reply [id=" + id + ", content=" + content + ", board=" + board + ", user=" + user + ", createDate="
-				+ createDate + "]";
-	}
 	
 	
 }
